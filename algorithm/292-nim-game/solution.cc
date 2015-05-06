@@ -4,6 +4,6 @@ public:
         if (!(n > 0)) {
             return false;
         }
-        return (n % 4);
+        return (n & 0b11);
     }
 };
