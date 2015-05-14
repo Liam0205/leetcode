@@ -12,18 +12,18 @@ public:
         sort (words.begin(), words.end(), stringLengthLarger);
         vector<int> mask (sz_words, 0);
         for (size_t i = 0; i != sz_words; ++i) {
-            const string & curr = words.at(i);
+            const string & curr = words[i];
             size_t sz_curr      = curr.length();
-            int & curr_mask     = mask.at(i);
+            int & curr_mask     = mask[i];
             for (size_t j = 0; j != sz_curr; ++j) {
-                curr_mask |= 1 << (curr.at(j) - 'a');
+                curr_mask |= 1 << (curr[j] - 'a');
             }
         }
         int curr_max = 0;
         for (size_t i = 0, range = sz_words - 1; i != range; ++i) {
             for (size_t j = i + 1; j != sz_words; ++j) {
-                if (!(mask.at(i) & mask.at(j))) {
-                    int curr = words.at(i).length() * words.at(j).length();
+                if (!(mask[i] & mask[j])) {
+                    int curr = words[i].length() * words[j].length();
                     curr_max = max (curr_max, curr);
                     range    = min (range, j);
                     break;
