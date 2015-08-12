@@ -1,40 +1,23 @@
 class Solution {
 public:
     int myAtoi(string str) {
-        int len    = str.size();
-        int pmFlag = 1; // postive == 1, negtive = -1
+        int len = str.size();
+        if (!len) return 0; // empty string
+        int idx = str.find_first_not_of(' ');
+        int pmFlag = 1; // pm sign
         int result = 0;
-        // find the fist chat not ' '
-        int working = 0;
-        for (; working != len; ++working){
-            if (str[working] != ' ') {
-                if (str[working] == '+') {
-                    ++working;
-                }
-                else if (str[working] == '-') {
-                    pmFlag = -1;
-                    ++working;
-                }
-                break;
-            }
+        if (str[idx] == '+' || str[idx] == '-') {
+            pmFlag = (str[idx++] == '-') ? -1 : 1;
         }
-        for (; working != len; ++working) {
-            // cout << "This is the " << working << "-th round" << endl;
-            if (str[working] < '0' || str[working] > '9') {
-                break;
-            }
-            int temp = str[working] - '0';
-            cout << "digit: " << temp << "\t";
-            if (pmFlag == 1  && (result > (int) (INT_MAX / 10) || (result == (int) (INT_MAX / 10) && temp > 7))) {
-                // cout << "INT_MAX detected!\t";
-                result = INT_MAX; break;
-            } else if (pmFlag == -1 && (result < (int) (INT_MIN / 10) || (result == (int) (INT_MIN / 10) && temp > 7))) {
-                // cout << "INT_MIN detected!\t";
-                result = INT_MIN; break;
-            }
-            result = 10 * result + pmFlag * temp;
-            cout << "result: " << result << endl;
+        // invalid input
+        for (; idx != len && str[idx] >= '0' && str[idx] <= '9'; ++idx) {
+            // overflow
+            if (result > INT_MAX / 10 ||
+                (result == INT_MAX / 10 && str[idx] - '0' > 7))
+                return (pmFlag == 1) ? INT_MAX : INT_MIN;
+            // normal calculation
+            result = 10 * result + (str[idx] - '0');
         }
-        return result;
+        return pmFlag * result;
     }
 };
