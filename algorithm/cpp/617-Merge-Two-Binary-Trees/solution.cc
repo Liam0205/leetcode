@@ -12,10 +12,19 @@ public:
     TreeNode* mergeTrees(TreeNode* t1, TreeNode* t2) {
         if (nullptr == t1 and nullptr == t2) {
             return nullptr;
+class Solution {
+public:
+    TreeNode* mergeTrees(TreeNode* t1, TreeNode* t2) {
+        if (nullptr == t1 and nullptr == t2) {
+            return nullptr;
+        } else if (nullptr != t1 and nullptr == t2) {
+            return t1;
+        } else if (nullptr == t1 and nullptr != t2) {
+            return t2;
         } else {
-            TreeNode* root = new TreeNode((nullptr != t1 ? t1->val : 0) + (nullptr != t2 ? t2->val : 0));
-            root->left  = mergeTrees((nullptr != t1 ? t1->left : nullptr),  (nullptr != t2 ? t2->left : nullptr));
-            root->right = mergeTrees((nullptr != t1 ? t1->right : nullptr), (nullptr != t2 ? t2->right : nullptr));
+            TreeNode* root = new TreeNode(t1->val + t2->val);
+            root->left  = mergeTrees(t1->left,  t2->left);
+            root->right = mergeTrees(t1->right, t2->right);
             return root;
         }
     }
