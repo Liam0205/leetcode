@@ -1,27 +1,27 @@
 class Solution {
 public:
-    int romanToInt(string s) {
-        size_t sz_length = s.size();
-        if (sz_length == 0) return 0;
-        int int_result = 0;
-        transform(s.begin(), s.end(), s.begin(), ::toupper);
-        if (s.find("IV") != string::npos) int_result -= 2 * 1;
-        if (s.find("IX") != string::npos) int_result -= 2 * 1;
-        if (s.find("XL") != string::npos) int_result -= 2 * 10;
-        if (s.find("XC") != string::npos) int_result -= 2 * 10;
-        if (s.find("CD") != string::npos) int_result -= 2 * 100;
-        if (s.find("CM") != string::npos) int_result -= 2 * 100;
-        for (size_t i = 0; i != sz_length; ++i) {
-            switch (s.at(i)) {
-                case 'I': int_result += 1;    break;
-                case 'V': int_result += 5;    break;
-                case 'X': int_result += 10;   break;
-                case 'L': int_result += 50;   break;
-                case 'C': int_result += 100;  break;
-                case 'D': int_result += 500;  break;
-                case 'M': int_result += 1000; break;
+    int romanToInt(std::string s) {
+        size_t sz = s.size();
+        if (sz == 0) return 0;
+        int res = 0;
+        std::transform(s.begin(), s.end(), s.begin(), ::toupper);
+        for (size_t i = 0; i != sz; ++i) {
+            switch (s[i]) {
+                case 'I': res += 1;    break;
+                case 'V': res += 5;    break;
+                case 'X': res += 10;   break;
+                case 'L': res += 50;   break;
+                case 'C': res += 100;  break;
+                case 'D': res += 500;  break;
+                case 'M': res += 1000; break;
             }
         }
-        return int_result;
+        if (s.find("IV") != std::string::npos) res -= 2 * 1;
+        if (s.find("IX") != std::string::npos) res -= 2 * 1;
+        if (s.find("XL") != std::string::npos) res -= 2 * 10;
+        if (s.find("XC") != std::string::npos) res -= 2 * 10;
+        if (s.find("CD") != std::string::npos) res -= 2 * 100;
+        if (s.find("CM") != std::string::npos) res -= 2 * 100;
+        return res;
     }
 };
