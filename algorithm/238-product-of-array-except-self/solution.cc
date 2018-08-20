@@ -1,16 +1,19 @@
 class Solution {
 public:
-    vector<int> productExceptSelf(vector<int>& nums) {
-        vector<int> vec_int_prod = {1};
-        int int_prod_reverse = 1;
-        size_t sz_length = nums.size();
-        for (size_t i = 0; i != sz_length - 1; ++i) {
-            vec_int_prod.push_back(vec_int_prod.at(i) * nums.at(i));
+    std::vector<int> productExceptSelf(std::vector<int>& nums) {
+        const size_t sz = nums.size();
+        std::vector<int> res(sz, 1);
+        for (size_t i = 1; i != sz; ++i) {
+            const size_t j = i - 1;
+            res[i] = res[j] * nums[j];
         }
-        for (size_t i = 0; i != sz_length; ++i) {
-            vec_int_prod.at(sz_length - i - 1) *= int_prod_reverse;
-            int_prod_reverse *= nums.at(sz_length - i - 1);
+        int tmp = 1;
+        for (size_t i = 0; i != sz; ++i) {
+            const size_t j = sz - 1 - i;
+            res[j] *= tmp;
+            tmp *= nums[j];
         }
-        return vec_int_prod;
+        return res;
     }
 };
+
