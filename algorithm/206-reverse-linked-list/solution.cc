@@ -9,16 +9,14 @@
 class Solution {
 public:
     ListNode* reverseList(ListNode* head) {
-        if (head == NULL || head->next == NULL) return head;
-        ListNode* pt_listnode_prev = NULL;
-        ListNode* pt_listnode_curr = head;
-        ListNode* pt_listnode_next;
-        while (pt_listnode_curr != NULL) {
-            pt_listnode_next = pt_listnode_curr->next;
-            pt_listnode_curr->next = pt_listnode_prev;
-            pt_listnode_prev = pt_listnode_curr;
-            pt_listnode_curr = pt_listnode_next;
+        ListNode *prev = nullptr, *curr = head;
+        while (nullptr != curr) {
+            ListNode* next = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = next;
         }
-        return pt_listnode_prev;
+        return prev;
     }
 };
+
