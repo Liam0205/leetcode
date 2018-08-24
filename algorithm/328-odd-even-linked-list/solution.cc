@@ -3,25 +3,32 @@
  * struct ListNode {
  *     int val;
  *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
  * };
  */
+static const auto io_sync_off = []() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    std::cout.tie(nullptr);
+    return nullptr;
+}();
+
 class Solution {
 public:
     ListNode* oddEvenList(ListNode* head) {
-        if (head == NULL || head->next == NULL) {
+        if (head == nullptr || head->next == nullptr) {
             return head;
         }
-        ListNode* odd_head  = NULL;
-        ListNode* even_head = NULL;
-        ListNode* odd_last  = NULL;
-        ListNode* even_last = NULL;
+        ListNode* odd_head  = nullptr;
+        ListNode* even_head = nullptr;
+        ListNode* odd_last  = nullptr;
+        ListNode* even_last = nullptr;
         ListNode* working   = head;
         bool is_odd         = true;
 
-        while (working != NULL) {
+        while (working != nullptr) {
             if (is_odd) {
-                if (odd_head == NULL) {
+                if (odd_head == nullptr) {
                     odd_head = working;
                     odd_last = odd_head;
                     working  = working->next;
@@ -32,7 +39,7 @@ public:
                 }
                 is_odd = false;
             } else {
-                if (even_head == NULL) {
+                if (even_head == nullptr) {
                     even_head = working;
                     even_last = even_head;
                     working   = working->next;
@@ -46,7 +53,7 @@ public:
         }
 
         odd_last->next  = even_head;
-        even_last->next = NULL;
+        even_last->next = nullptr;
         return odd_head;
     }
 };
