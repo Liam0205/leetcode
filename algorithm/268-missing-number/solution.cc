@@ -1,11 +1,17 @@
+static const auto io_sync_off = []() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    std::cout.tie(nullptr);
+    return nullptr;
+}();
+
 class Solution {
 public:
-    int missingNumber(vector<int>& nums) {
-        size_t sz_length = nums.size();
-        int int_total_sum = sz_length * (sz_length + 1) / 2;
-        int int_sum = 0;
-        for (size_t i = 0; i != sz_length; ++i)
-            int_sum += nums.at(i);
-        return int_total_sum - int_sum;
+    int missingNumber(const std::vector<int>& nums) {
+        const size_t sz = nums.size();
+        const int total_sum = sz * (sz + 1) / 2;
+        const int curr_sum  = std::accumulate(nums.begin(), nums.end(), 0);
+        return total_sum - curr_sum;
     }
 };
+
