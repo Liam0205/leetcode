@@ -1,0 +1,344 @@
+\documentclass[UTF8, final]{ctexart}
+\usepackage{ifdraft}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+\usepackage{geometry}
+\geometry{scale = 0.81}
+\usepackage{paralist}
+\usepackage{listings}
+\usepackage{xcolor}
+\renewcommand{\lstlistingname}{代码片段}
+\lstdefinestyle{lfonts}{
+    basicstyle   = \footnotesize\upshape\ttfamily,
+    stringstyle  = \color{purple},
+    keywordstyle = \color{blue!60!black}\bfseries,
+    commentstyle = \color{olive}\scshape,
+}
+\lstdefinestyle{lnumbers}{
+    numbers     = left,
+    numberstyle = \tiny,
+    numbersep   = 1em,
+    firstnumber = 1,
+    stepnumber  = 1,
+}
+\lstdefinestyle{llayout}{
+    breaklines       = true,
+    tabsize          = 2,
+    columns          = spacefixed,
+}
+\lstdefinestyle{lgeometry}{
+    xleftmargin      = 20pt,
+    xrightmargin     = 0pt,
+    frame            = tb,
+    framesep         = \fboxsep,
+    framexleftmargin = 20pt,
+}
+\lstdefinestyle{lgeneral}{
+    style = lfonts,
+    style = lnumbers,
+    style = llayout,
+    style = lgeometry,
+    mathescape = true,
+    escapechar = \%,
+}
+\lstdefinestyle{lcpp}{
+    language = {C++},
+    style = {lgeneral},
+    morekeywords = {constexpr, noexcept, nullptr, override, size_t, final}
+}
+\lstdefinestyle{lpy}{
+    language = {Python},
+    style = {lgeneral},
+}
+\lstdefinestyle{lsh}{
+    language = {sh},
+    style = {lgeneral},
+}
+\usepackage{amsmath, amsthm}
+\newtheorem{question}{题目}
+\newtheorem{solution}{解答}
+
+\title{面试题集解}
+\author{Liam Huang}
+\date{\today}
+
+\ifdraft{\renewcommand{\lstinputlisting}[2][]{\relax}}{}
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{脑筋急转弯类型}
+\begin{question}
+已知你有无穷多的水，现在有两个提桶，一个装满水是3公升，一个装满水是5公升，这两个桶形状都不一样，怎么得到4公升的水。
+\end{question}
+\begin{solution}
+设容积为 3 公升的桶为 A，容积为 5 公升的桶为 B。则有步骤：
+\begin{compactitem}
+    \item B 桶装满水；
+    \item B 桶向 A 桶倒水至 A 桶满；
+    \item A 桶清空；
+    \item B 桶向 A 桶倒光剩余水；
+    \item B 桶装满水；
+    \item B 桶向 A 桶倒水至 A 桶满；
+    \item B 桶剩余 4 公升水。
+\end{compactitem}
+\end{solution}
+
+\section{体系结构、操作系统相关}
+\begin{question}
+为什么 C++ 是「字节对齐」的？
+\end{question}
+\begin{solution}
+本质原因是 CPU 访存时是按字节寻址的。如果 C++ 不按字节对齐，那么每次访存后，还要加上 0 -- 7 bit 的偏移量。如此，按照 Intel 的设计，会降低内存系统的性能。
+\end{solution}
+
+\section{基本算法的设计和实现}
+\begin{question}
+用 C++ 实现二分查找。
+\end{question}
+\begin{solution}
+关键点：
+\begin{compactitem}
+    \item 不用递归；
+    \item 边界条件处理。
+\end{compactitem}
+\lstinputlisting[style = lcpp]{bsearch.cc}
+\end{solution}
+
+\begin{question}
+用 C++ 实现二分查找，对有重复元素的情况，考虑返回首次出现或者末次出现的位置。
+\end{question}
+\begin{solution}
+关键点：
+\begin{compactitem}
+    \item 策略处理。
+\end{compactitem}
+\lstinputlisting[style = lcpp]{bsearch_with_policy.cc}
+\end{solution}
+
+\begin{question}
+实现归并排序。
+\end{question}
+\begin{solution}
+关键点：
+\begin{compactitem}
+    \item \lstinline[style = lcpp]|std::inplace_merge| 要求双向迭代器；
+    \item 递归调用、递归终止条件。
+\end{compactitem}
+\lstinputlisting[style = lcpp]{merge_sort.cc}
+\end{solution}
+
+\begin{question}
+实现二叉树的四种遍历：前序遍历、中序遍历、后序遍历、层次遍历。
+\end{question}
+\begin{solution}
+关键点：
+\begin{compactitem}
+    \item 后序遍历注意结点输出条件；
+    \item 层次遍历注意双指针方法的使用。
+\end{compactitem}
+\lstinputlisting[style = lcpp]{traverse_bitree.cc}
+\end{solution}
+
+\begin{question}
+给你一棵二叉树，要求填充各节点的 \lstinline[style = lcpp]|next| 指针，以指向节点的下一个兄弟节点；若不存在这样的节点，则指向 \lstinline[style = lcpp]|nullptr|。
+\end{question}
+\begin{solution}
+关键点：
+\begin{compactitem}
+    \item 层序遍历。
+\end{compactitem}
+\lstinputlisting[style = lcpp]{fill_next_for_bitree.cc}
+\end{solution}
+
+\begin{question}
+mapreduce为什么设计成map和reduce两个阶段
+\end{question}
+\begin{solution}
+关键点：
+\begin{compactitem}
+    \item 计算步骤之间的数据依赖。
+\end{compactitem}
+\end{solution}
+
+\begin{question}
+设计并实现一个 hashmap，以开放地址法解决 Hash 碰撞。
+\end{question}
+\begin{solution}
+关键点：
+\begin{compactitem}
+    \item 开放地址法的正确实现；
+    \item 开放地址法在负载率超过 $0.8$ 时，效率迅速下降，注意扩张哈希表容量。
+    \item 接口设计。
+\end{compactitem}
+\lstinputlisting[style = lcpp, escapechar = @]{hash_map.cc}
+\end{solution}
+
+\begin{question}
+实现快速排序算法。
+\end{question}
+\begin{solution}
+关键点：
+\begin{compactitem}
+    \item 主元的选择；
+    \item C++ STL 的 \lstinline[style = lcpp]|std::partition| 并不保证主元在 \lstinline[style = lcpp]|cut| 位置；
+    \item 利用循环减少递归次数。
+\end{compactitem}
+\lstinputlisting[style = lcpp, escapechar = @]{quick_sort.cc}
+\end{solution}
+
+\section{基本算法的运用}
+\begin{question}
+将矩阵顺时针旋转 90 度。
+\end{question}
+\begin{solution}
+关键点：
+\begin{compactitem}
+    \item 资源的申请和释放；
+    \item 函数封装；
+    \item \lstinline[style = lcpp]|output[w][height - 1 - h] = input[h][w];|。
+\end{compactitem}
+\lstinputlisting[style = lcpp]{rotate_matrix.cc}
+\end{solution}
+
+\begin{question}
+有一组非降序排列的数组，求它们的交集。
+\end{question}
+\begin{solution}
+关键点：
+\begin{compactitem}
+    \item 利用非降序的特性；
+    \item 求交集，最终结果逐渐减少，删除占主要操作，使用 \lstinline[style = lcpp]|std::list<T>|。
+\end{compactitem}
+\lstinputlisting[style = lcpp]{join_sorted_vector.cc}
+\end{solution}
+
+\begin{question}
+有一整型数据组成的数组，相邻两个数之差的绝对值总是 1。要求实现一尽可能快的算法，寻找元素第一次出现的位置。
+\end{question}
+\begin{solution}
+关键点：
+\begin{compactitem}
+    \item 利用\emph{相邻两个数之差的绝对值总是 1}的条件，跳跃搜索。
+\end{compactitem}
+\lstinputlisting[style = lcpp]{search_with_jump.cc}
+\end{solution}
+
+\begin{question}
+现有两个以非增序排列的数组，求两个数组中第 n 小的数。
+\end{question}
+\begin{solution}
+关键点：
+\begin{compactitem}
+    \item 归并；
+    \item 计数器。
+\end{compactitem}
+\lstinputlisting[style = lcpp]{find_topK_with_merge.cc}
+\end{solution}
+
+\begin{question}
+\label{q:stocks}
+有一非负实数序列表示某一股票的价格变化。现要求设计一算法，尽可能快地寻找一次买入和卖出条件下所能获利的最大值。
+\end{question}
+\begin{solution}
+关键点：
+\begin{compactitem}
+    \item 算法复杂度下界是 $O(n)$；
+    \item 两两做差，求得股票每日价格变化值；
+    \item 问题转换为子序列最大和问题，动态规划可破。
+\end{compactitem}
+\lstinputlisting[style = lcpp]{find_max_profit.cc}
+\end{solution}
+
+\begin{question}
+设计一个快速求幂方的算法，以计算 $6^{15}$。
+\end{question}
+\begin{solution}
+关键点：
+\begin{compactitem}
+    \item 剔除幂的二进制表示的尾部 0；
+    \item 非递归，避免重复计算。
+\end{compactitem}
+\lstinputlisting[style = lcpp]{fast_power.cc}
+\end{solution}
+
+\begin{question}
+输入有序数组，输出哈夫曼树。
+\end{question}
+\begin{solution}
+关键点：
+\begin{compactitem}
+    \item 哈弗曼树的定义；
+    \item 链表的运用。
+\end{compactitem}
+\lstinputlisting[style = lcpp]{construct_huffman_tree.cc}
+\end{solution}
+
+\begin{question}
+求 $n$ 个数和输入数的海明距离最小的 $k$ 个。
+\end{question}
+\begin{solution}
+关键点：
+\begin{compactitem}
+    \item 海明距离定义；
+    \item 快速求解海明距离；
+    \item 取 TopK 时堆的运用。
+\end{compactitem}
+\lstinputlisting[style = lcpp]{hamming_distance.cc}
+\end{solution}
+
+\begin{question}
+一个人走楼梯，可以一次走一阶、二阶、三阶，$n$ 阶楼梯有多少种走法。
+\end{question}
+\begin{solution}
+关键点：
+\begin{compactitem}
+    \item 递推：$S(n) = S(n - 1) + S(n - 2) + S(n - 3)$。
+\end{compactitem}
+\lstinputlisting[style = lcpp]{steps.cc}
+\end{solution}
+
+\begin{question}
+给定一个长度为 $n$ 的无序数组，求其连续子序列的最大和。
+\end{question}
+\begin{solution}
+参考 \ref{q:stocks} 的解法。
+\end{solution}
+
+\begin{question}
+在一个长度为 $n$ 的无序数组中，找到其中第 $k$ 大的元素（$k < n$）。要求时间复杂度为 $\Theta(n)$
+\end{question}
+\begin{solution}
+关键点：
+\end{solution}
+
+\section{偏工程、语言问题}
+\begin{question}
+\label{q:singleton}
+实现一个单例模式。
+\end{question}
+\begin{solution}
+关键点：
+\begin{compactitem}
+    \item 单例的构造，要以 \lstinline[style=lcpp]|std::call_once| 或者 \textsf{pthread} 相关工具保证；
+    \item 不能用 double check。
+\end{compactitem}
+C++ 11 版本：
+\lstinputlisting[style = lcpp]{singleton.cc}
+
+\textsf{pthread} 版本：
+\lstinputlisting[style = lcpp]{singleton_pthread.cc}
+\end{solution}
+
+\begin{question}
+C++ 中如何实现一个不可被继承的类？如何使用这种类的对象？
+\end{question}
+\begin{solution}
+关键点：
+\begin{compactitem}
+    \item 实例化子类需要调用父类构造函数，控制父类构造函数的访问权限为 \lstinline[style=lcpp]|private| 即可；
+    \item 也可以用 C++11 的关键字 \lstinline[style=lcpp]|final|；
+    \item 类似 \ref{q:singleton} 中的做法。
+\end{compactitem}
+\end{solution}
+\end{document}
