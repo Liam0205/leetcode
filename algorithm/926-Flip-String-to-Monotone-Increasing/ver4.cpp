@@ -1,7 +1,7 @@
-static int x= [](){ std::ios::sync_with_stdio(0); cin.tie(0); return 0; }();
+static int x = [](){ std::ios::sync_with_stdio(0); cin.tie(0); return 0; }();
 class Solution {
 public:
-    int minFlipsMonoIncr(string S) {
+    int minFlipsMonoIncr(const std::string& S) {
         int counter_one  = 0;
         int counter_flip = 0;
         for (auto ch : S) {
