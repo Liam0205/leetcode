@@ -39,6 +39,6 @@ public:
             }
         }
         
-        return static_cast<double>(totSteps) / pow(8, K);
+        return totSteps / pow(8, K);
     }
 };
