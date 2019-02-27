@@ -6,27 +6,27 @@
 
 template <typename Key, typename T, typename Hash = std::hash<Key>>
 class hash_map {
- public:
+  public:
     using key_type = Key;
     using mapped_type = T;
     using value_type = std::pair<const key_type, mapped_type>;
     using size_type = size_t;
     using hasher = std::hash<Key>;
 
- private:  // helper
+  private:  // helper
     using wrapper = std::shared_ptr<value_type>;
 
- public:  // constructor
+  public:  // constructor
     hash_map() {
         container_.resize(primes_[size_level_]);
     }
 
- public:  // capacity
+  public:  // capacity
     bool empty() const { return empty_; }
     size_type size() const { return size_; }
     size_type max_size() const { return primes_[size_level_]; }
 
- public:  // find and modify
+  public:  // find and modify
     mapped_type& operator[](const key_type& key) {
         auto hashed = find_hash(key);
         if (not(container_[hashed]) and construct_new_on_position(hashed, key) and
@@ -36,7 +36,7 @@ class hash_map {
         return container_[hashed]->second;
     }
 
- public:  // hash policy
+  public:  // hash policy
     double load_factor() const { return static_cast<double>(size()) / max_size(); }
     double max_load_factor() const { return max_load_factor_; }
     void expand() const {
@@ -52,7 +52,7 @@ class hash_map {
         container_ = std::move(temp);
     }
 
- private:  // helper functions
+  private:  // helper functions
     size_type find_hash(const key_type& key) const {
         const size_t csz = container_.size();
         size_t count = 0;
@@ -69,7 +69,7 @@ class hash_map {
         return true;
     }
 
- private:
+  private:
     const hasher hasher_ = hasher();
     mutable size_t size_level_ = 0;
     mutable std::vector<wrapper> container_;
