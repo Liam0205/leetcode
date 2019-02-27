@@ -5,11 +5,14 @@ public:
     if (p.empty()) {
       return s.empty();
     } else /* lbi */;
-    size_t ssize = s.size();
-    size_t psize = p.size();
+    const size_t ssize = s.size();
+    const size_t psize = p.size();
     /* dp[i][j] = s[0, i) maches p[0, j); */
-    std::vector<std::vector<bool>> dp(ssize + 1, std::vector<bool>(psize + 1, false));
+    bool dp[ssize + 1][psize + 1];
     dp[0][0] = true;  // empty s matches empty p.
+    for (size_t i = 1; i <= ssize; ++i) {
+      dp[i][0] = false;
+    }
     for (size_t j = 1; j <= psize; ++j) {
       dp[0][j] = (j > 1 and p[j - 1] == '*' and dp[0][j - 2]);
     }
