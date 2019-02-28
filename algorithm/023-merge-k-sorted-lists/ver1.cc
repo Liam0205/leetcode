@@ -16,33 +16,21 @@ static const auto io_sync_off = []() {
 class Solution {
  public:
   ListNode* mergeKLists(std::vector<ListNode*>& lists) {
-    return std::accumulate(lists.begin(), lists.end(), static_cast<ListNode*>(nullptr),
-        mergeTwoLists);
-  }
-
-  static ListNode* mergeTwoLists(ListNode* lhs, ListNode* rhs) {
-    if (lhs == nullptr) {
-      return rhs;
-    } else if (rhs == nullptr) {
-      return lhs;
-    } else /* lbi */;
     ListNode sentry(42);
     ListNode* work = &sentry;
-    while (lhs != nullptr and rhs != nullptr) {
-      if (lhs->val < rhs->val) {
-        work->next = lhs;
-        work = work->next;
-        lhs = work->next;
-      } else {
-        work->next = rhs;
-        work = work->next;
-        rhs = work->next;
-      }
-    }
-    if (lhs != nullptr) {
-      work->next = lhs;
-    } else {
-      work->next = rhs;
+    while (std::any_of(lists.begin(), lists.end(), [](ListNode* p){ return p != nullptr; })) {
+      auto mit = std::min_element(lists.begin(), lists.end(), [](ListNode* lhs, ListNode* rhs){
+            if (lhs == nullptr) {
+              return false;
+            } else if (rhs == nullptr) {
+              return true;
+            } else {
+              return lhs->val < rhs->val;
+            }
+          });
+      work->next = (*mit);
+      work = work->next;
+      *mit = work->next;
     }
     return sentry.next;
   }
