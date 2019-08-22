@@ -320,6 +320,18 @@ mapreduce为什么设计成map和reduce两个阶段
 关键点：
 \end{solution}
 
+\begin{question}
+现有不同时为空的有序数组 A 和 B（非降序），其长度分别为 m 和 n。记 A 和 B 的中位数为 x，要求在 $\Theta(\log(m + n))$ 的时间复杂度内找到 x。
+\end{question}
+\begin{solution}
+关键点：
+\begin{compactitem}
+\item 理解二分搜索的本质是「在一个有序可随机方位的序列中，寻找某种满足跟『元素顺序』相关条件的元素」；
+\item 创造条件，使用二分搜索。
+\end{compactitem}
+\lstinputlisting[style = lcpp]{find_median_in_sorted_arrays.cc}
+\end{solution}
+
 \section{偏工程、语言问题}
 \begin{question}
 \label{q:singleton}
