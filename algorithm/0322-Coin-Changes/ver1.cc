@@ -6,7 +6,7 @@ static const auto io_sync_off = []() {
 
 class Solution {
  public:
-  int coinChange(vector<int>& coins, int amount) {
+  int coinChange(const std::vector<int>& coins, int amount) {
     std::vector<int> dp(amount + 1, googol);
     dp[0] = 0;
 
