@@ -22,23 +22,17 @@ class Solution {
       sum += val;
       val  = sum;
     };
-    inversed_midorder_traverse(root, op);
+    inversed_midorder_traverse_recursively(root, op);
     return root;
   }
 
  private:
   template <typename UnaryOp>
-  void inversed_midorder_traverse(TreeNode* node, UnaryOp op) {
-    std::stack<TreeNode*> buffer;
-    while (nullptr != node or not buffer.empty()) {
-      while (nullptr != node) {
-        buffer.push(node);
-        node = node->right;
-      }
-      node = buffer.top();
-      buffer.pop();
+  void inversed_midorder_traverse_recursively(TreeNode* node, UnaryOp& op) {
+    if (nullptr != node) {
+      if (nullptr != node->right) { inversed_midorder_traverse_recursively(node->right, op); }
       op(node->val);
-      node = node->left;
+      if (nullptr != node->left) { inversed_midorder_traverse_recursively(node->left, op); }
     }
   }
 };
