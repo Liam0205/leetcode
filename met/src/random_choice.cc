@@ -21,7 +21,7 @@ vector_type random_choice(const vector_type& vec, const size_t k) {
   std::unordered_set<size_t> chosen;
   for (size_t i = 0; i != k; ++i) {
     size_t r = dis(gen);
-    while (r < sz and chosen.find(r) != chosen.end()) ++r;
+    while (r < sz and chosen.find(r) != chosen.end()) r = ++r % sz;
     chosen.insert(r);
   }
 
