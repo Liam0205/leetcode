@@ -1,55 +1,78 @@
 #include <iostream>
-#include <algorithm>
+#include <iterator>
 #include <functional>
+#include <algorithm>
+#include <type_traits>
 #include <vector>
+#include <list>
+#include <forward_list>
 
 namespace {
 namespace details {
-template <typename T, typename BinaryPredicate>
-T median(T&& a, T&& b, T&& c, BinaryPredicate bipred) {
-    if ((bipred(b, a) and bipred(a, c)) or (bipred(c, a) and bipred(a, b))) {
-        return a;
-    } else if ((bipred(a, b) and bipred(b, c)) or (bipred(c, b) and bipred(b, a))) {
-        return b;
-    } else {
-        return c;
-    }
+template <typename BidirIt>
+BidirIt swap_and_return(BidirIt pivot, BidirIt first, std::bidirectional_iterator_tag) {
+  --first;
+  std::iter_swap(pivot, first);
+  return first;
 }
 
-template <typename ForwardIt, typename BinaryPredicate, typename T>
-ForwardIt partition(ForwardIt first, ForwardIt last, BinaryPredicate bipred, T pivot) {
-    ForwardIt cut =
-        std::partition(first, last, [bipred, pivot](auto&& e){ return bipred(e, pivot); });
-    std::partition(cut, last, [bipred, pivot](auto&& e){ return !bipred(pivot, e); });
-    return cut;
+template <typename ForwardIt>
+ForwardIt swap_and_return(ForwardIt pivot, ForwardIt first, std::forward_iterator_tag) {
+    ForwardIt it;
+    for (it = pivot; std::next(it) != first; ++it);
+    std::iter_swap(pivot, it);
+    return it;
+}
+
+template <typename ForwardIt,
+          typename Category = typename std::iterator_traits<ForwardIt>::iterator_category,
+          typename Value = typename std::iterator_traits<ForwardIt>::value_type,
+          typename BinaryPred = std::less<Value>>
+ForwardIt partition(ForwardIt first, ForwardIt last, ForwardIt pivot,
+                    BinaryPred comp = BinaryPred()) {
+  static_assert(std::is_base_of<std::forward_iterator_tag, Category>::value,
+      "Iter must be ForwardIt!");
+
+  std::iter_swap(first, pivot);
+  pivot = first++;
+
+  auto less = std::bind(comp, std::placeholders::_1, *pivot);
+
+  first = std::find_if_not(first, last, less);
+
+  if (first != last) {
+    for (ForwardIt i = std::next(first); i != last; ++i) {
+      if (less(*i)) {
+        std::iter_swap(i, first);
+        ++first;
+      }
+    }
+  }
+
+  return swap_and_return(pivot, first, Category());
 }
 }  // namespace details
 
-template <typename ForwardIt, typename BinaryPredicate>
-void quick_sort(ForwardIt first, ForwardIt last, BinaryPredicate bipred) {
-    while (std::distance(first, last) > 1) {
-        auto pivot =
-            details::median(*first, *(first + std::distance(first, last) / 2), *(last - 1), bipred);
-        ForwardIt cut = details::partition(first, last, bipred, pivot);
-        quick_sort(cut + 1, last, bipred);
-        last = cut;
-    }
+template <typename ForwardIt,
+          typename Value = typename std::iterator_traits<ForwardIt>::value_type,
+          typename BinaryPred = std::less<Value>>
+void quicksort(ForwardIt first, ForwardIt last, BinaryPred comp = BinaryPred()) {
+  while (std::distance(first, last) > 1) {
+    ForwardIt cut = details::partition(first, last, first, comp);
+    quicksort(std::next(cut), last, comp);
+    last = cut;
+  }
 }
 }  // namespace
 
 int main() {
-    std::vector<int> test{1, 30, -4, 3, 5, -4, 1, 6, -8, 2, -5, 64, 1, 92};
-    std::cout << "before sort:\n\t";
-    for (auto v : test) {
-        std::cout << v << ' ';
-    }
-    std::cout << std::endl;
-    quick_sort(test.begin(), test.end(), std::less<int>());
-    std::cout << "after sort:\n\t";
-    for (auto v : test) {
-        std::cout << v << ' ';
-    }
-    std::cout << std::endl;
+  std::vector<int> v{1, 30, -4, 3, 5, -4, 1, 6, -8, 2, -5, 64, 1, 92};
 
-    return 0;
+  std::for_each(v.begin(), v.end(), [&](auto e) { std::cout << e << ' '; });
+  std::cout << std::endl;
+  quick_sort(v.begin(), v.end(), std::less<int>());
+  std::for_each(v.begin(), v.end(), [&](auto e) { std::cout << e << ' '; });
+  std::cout << std::endl;
+
+  return 0;
 }
