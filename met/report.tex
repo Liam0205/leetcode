@@ -195,6 +195,19 @@ mapreduce为什么设计成map和reduce两个阶段
 \lstinputlisting[style = lcpp, escapechar = @]{quick_sort.cc}
 \end{solution}
 
+\begin{question}
+在给定元素顺序规则的情况下，实现对一个序列求其字典序下一个置换。
+\end{question}
+\begin{solution}
+关键点：
+\begin{compactitem}
+    \item 从后往前看，找到第一个 drop 的位置，左边记为 \lstinline[style = lcpp]|valley| 右边记为 \lstinline[style = lcpp]|peak|；
+    \item 在 \lstinline[style = lcpp]|peak| 之后的位置中，找到第一个在给定顺序中不先于 \lstinline[style = lcpp]|valley| 的元素，记为 \lstinline[style = lcpp]|i|；
+    \item 逆序数增加且只增加 1。
+\end{compactitem}
+\lstinputlisting[style = lcpp, escapechar = @]{next_permutation.cc}
+\end{solution}
+
 \section{基本算法的运用}
 \begin{question}
 将矩阵顺时针旋转 90 度。
@@ -329,7 +342,7 @@ mapreduce为什么设计成map和reduce两个阶段
 \item 理解二分搜索的本质是「在一个有序可随机方位的序列中，寻找某种满足跟『元素顺序』相关条件的元素」；
 \item 创造条件，使用二分搜索。
 \end{compactitem}
-\lstinputlisting[style = lcpp]{find_median_in_sorted_arrays.cc}
+\lstinputlisting[style = lcpp, escapechar = @]{find_median_in_sorted_arrays.cc}
 \end{solution}
 
 \section{偏工程、语言问题}
