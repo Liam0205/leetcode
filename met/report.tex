@@ -7,6 +7,7 @@
 \usepackage{paralist}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{amsmath, amssymb}
 \renewcommand{\lstlistingname}{代码片段}
 \lstdefinestyle{lfonts}{
     basicstyle   = \footnotesize\upshape\ttfamily,
@@ -90,6 +91,32 @@
     \item B 桶向 A 桶倒水至 A 桶满；
     \item B 桶剩余 4 公升水。
 \end{compactitem}
+\end{solution}
+
+\section{偏数学问题}
+\begin{question}
+在一条线段上均匀随机选择两个点，将线段分成三小段。求这三小段能够组成三角形的概率。
+\end{question}
+\begin{solution}
+设：线段长度为 $1$，两个点到线段左端点的距离分别为 $x$ 和 $y$，不妨设 $x \leqslant y$。则根据「任意两边之和大于第三边」的条件，组成如下不等式组
+\[
+  \begin{cases}
+    x + (y - x) > 1 - y \\
+    x + (1 - y) > y - x \\
+    (y - x) + (1 - y) > x
+  \end{cases}
+\]
+化简得
+\[
+  \begin{cases}
+    y > 0.5 \\
+    y < x + 0.5 \\
+    x < 0.5
+  \end{cases}
+\]
+
+由上述条件围成三角形的面积知结果 $P = 0.25$。
+
 \end{solution}
 
 \section{体系结构、操作系统相关}
@@ -367,7 +394,7 @@ mapreduce为什么设计成map和reduce两个阶段
     \item 类似线性开放地址法解决 Hash 表冲突的应用；
     \item 线性复杂度。
 \end{compactitem}
-\lstinputlisting[style = lcpp]{random_choice.cc}
+\lstinputlisting[style = lcpp, escapechar = @]{random_choice.cc}
 \end{solution}
 
 \section{偏工程、语言问题}
