@@ -385,7 +385,7 @@ mapreduce为什么设计成map和reduce两个阶段
 \end{solution}
 
 \begin{question}
-给你一个长度为 \lstinline[style = lcpp]|n| 的向量，实现随机选择函数 \lstinline[style = lcpp]|random_choice|，从中随机选择 \lstinline[style = lcpp]|k| 个元素。
+给你一个长度为 \lstinline[style = lcpp]|n| 的向量，实现随机抽样函数 \lstinline[style = lcpp]|random_choice|，从中随机抽样 \lstinline[style = lcpp]|k| 个元素。
 \end{question}
 \begin{solution}
 关键点：
@@ -394,7 +394,7 @@ mapreduce为什么设计成map和reduce两个阶段
     \item 类似线性开放地址法解决 Hash 表冲突的应用；
     \item 线性复杂度。
 \end{compactitem}
-\lstinputlisting[style = lcpp, escapechar = @]{random_choice.cc}
+\lstinputlisting[style = lcpp, escapechar = @]{random_sample.cc}
 \end{solution}
 
 \section{偏工程、语言问题}

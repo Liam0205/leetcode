@@ -6,7 +6,7 @@
 
 namespace yuuki {
 template <typename vector_type>
-vector_type random_choice(const vector_type& vec, const size_t k) {
+vector_type random_sample(const vector_type& vec, const size_t k) {
   const size_t sz = vec.size();
   if (k == sz) {
     return vec;
@@ -21,7 +21,7 @@ vector_type random_choice(const vector_type& vec, const size_t k) {
   std::unordered_set<size_t> chosen;
   for (size_t i = 0; i != k; ++i) {
     size_t r = dis(gen);
-    while (r < sz and chosen.find(r) != chosen.end()) r = ++r % sz;
+    while (chosen.find(r) != chosen.end()) r = dis(gen);
     chosen.insert(r);
   }
 
@@ -36,7 +36,7 @@ vector_type random_choice(const vector_type& vec, const size_t k) {
 
 int main() {
   std::vector<int> v{1, 2, 3, 4};
-  auto vv = yuuki::random_choice(v, 3);
+  auto vv = yuuki::random_sample(v, 3);
   std::for_each(vv.begin(), vv.end(), [&](auto e) { std::cout << e << ' '; });
   std::cout << std::endl;
 
