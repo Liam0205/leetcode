@@ -149,17 +149,6 @@
 \end{solution}
 
 \begin{question}
-给你一棵二叉树，要求填充各节点的 \lstinline[style = lcpp]|next| 指针，以指向节点的下一个兄弟节点；若不存在这样的节点，则指向 \lstinline[style = lcpp]|nullptr|。
-\end{question}
-\begin{solution}
-关键点：
-\begin{compactitem}
-    \item 层序遍历。
-\end{compactitem}
-\lstinputlisting[style = lcpp]{fill_next_for_bitree.cc}
-\end{solution}
-
-\begin{question}
 mapreduce为什么设计成map和reduce两个阶段
 \end{question}
 \begin{solution}
@@ -343,6 +332,29 @@ mapreduce为什么设计成map和reduce两个阶段
 \item 创造条件，使用二分搜索。
 \end{compactitem}
 \lstinputlisting[style = lcpp, escapechar = @]{find_median_in_sorted_arrays.cc}
+\end{solution}
+
+\begin{question}
+给你一棵二叉树，要求填充各节点的 \lstinline[style = lcpp]|next| 指针，以指向节点的下一个兄弟节点；若不存在这样的节点，则指向 \lstinline[style = lcpp]|nullptr|。
+\end{question}
+\begin{solution}
+关键点：
+\begin{compactitem}
+    \item 层序遍历。
+\end{compactitem}
+\lstinputlisting[style = lcpp]{fill_next_for_bitree.cc}
+\end{solution}
+
+
+\begin{question}
+给你一棵二叉树，要求顺序输出从右往左看能看到的数字。
+\end{question}
+\begin{solution}
+关键点：
+\begin{compactitem}
+    \item 层序遍历。
+\end{compactitem}
+\lstinputlisting[style = lcpp]{output_rightmost_node_value.cc}
 \end{solution}
 
 \section{偏工程、语言问题}
