@@ -385,7 +385,7 @@ mapreduce为什么设计成map和reduce两个阶段
 \end{solution}
 
 \begin{question}
-给你一个长度为 \lstinline[style = lcpp]|n| 的向量，实现随机抽样函数 \lstinline[style = lcpp]|random_choice|，从中随机抽样 \lstinline[style = lcpp]|k| 个元素。
+给你一个长度为 \lstinline[style = lcpp]|n| 的向量，实现随机抽样函数 \lstinline[style = lcpp]|random_sample|，从中随机抽样 \lstinline[style = lcpp]|k| 个元素。
 \end{question}
 \begin{solution}
 关键点：
@@ -406,6 +406,13 @@ mapreduce为什么设计成map和reduce两个阶段
   \item 构造二分查找的使用场景。
 \end{compactitem}
 \lstinputlisting[style = lcpp, escapechar = @]{random_choice.cc}
+\end{solution}
+
+\begin{question}
+向量 \lstinline[style = lcpp]|std::vector<int>| 是随机变量 $X$ 的所有可能取值，其对应的概率由向量 \lstinline[style = lcpp]|std::vector<double>| 给出。要求实现一个获取随机变量值的函数，使得时间复杂度不超过常数复杂度。
+\end{question}
+\begin{solution}
+\lstinputlisting[style = lcpp, escapechar = @]{random_choice_alias_method.cc}
 \end{solution}
 
 \section{偏工程、语言问题}

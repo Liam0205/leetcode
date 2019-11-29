@@ -75,7 +75,7 @@ int main() {
   for (auto pair : counter) {
     std::cout << pair.first << "[" << pair.second << "]" << ": \t";
     for (size_t i = 0; i != pair.second / 2500; ++i) {
-      std::cout << '*';
+      std::cout << '=';
     }
     std::cout << std::endl;
   }
