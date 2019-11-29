@@ -45,7 +45,7 @@
 \lstdefinestyle{lcpp}{
     language = {C++},
     style = {lgeneral},
-    morekeywords = {constexpr, noexcept, nullptr, override, size_t, final}
+    morekeywords = {constexpr, noexcept, nullptr, override, size_t, final, assert}
 }
 \lstdefinestyle{lpy}{
     language = {Python},
@@ -395,6 +395,17 @@ mapreduce为什么设计成map和reduce两个阶段
     \item 线性复杂度。
 \end{compactitem}
 \lstinputlisting[style = lcpp, escapechar = @]{random_sample.cc}
+\end{solution}
+
+\begin{question}
+向量 \lstinline[style = lcpp]|std::vector<int>| 是随机变量 $X$ 的所有可能取值，其对应的概率由向量 \lstinline[style = lcpp]|std::vector<double>| 给出。要求实现一个获取随机变量值的函数，使得时间复杂度不超过随机变量可能取值数量的对数复杂度。
+\end{question}
+\begin{solution}
+关键点：
+\begin{compactitem}
+  \item 构造二分查找的使用场景。
+\end{compactitem}
+\lstinputlisting[style = lcpp, escapechar = @]{random_choice.cc}
 \end{solution}
 
 \section{偏工程、语言问题}
