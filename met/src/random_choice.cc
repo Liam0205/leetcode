@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <limits>
 #include <functional>
+#include <map>
 
 template <typename T>
 class discrete_random_variable {
@@ -46,7 +47,7 @@ class discrete_random_variable {
     while (first < last) {
       iter_t mid = first + std::distance(first, last) / 2;
       if (not(binpred(target, *mid)) and
-            std::next(mid) == last or binpred(target, *(std::next(mid)))) {
+            (std::next(mid) == last or binpred(target, *(std::next(mid))))) {
         return std::distance(begin, mid);
       } else if (binpred(target, *mid)) {
         last = mid;
@@ -64,8 +65,19 @@ int main() {
 
   discrete_random_variable<int> drv{values, probs};
 
-  for (size_t i = 0; i != 10000; ++i) {
-    assert(std::find(values.begin(), values.end(), drv()) != values.end());
+  std::map<int, size_t> counter;
+
+  for (size_t i = 0; i != 200000; ++i) {
+    int x = drv();
+    assert(std::find(values.begin(), values.end(), x) != values.end());
+    ++counter[x];
+  }
+  for (auto pair : counter) {
+    std::cout << pair.first << "[" << pair.second << "]" << ": \t";
+    for (size_t i = 0; i != pair.second / 2500; ++i) {
+      std::cout << '*';
+    }
+    std::cout << std::endl;
   }
 
   return 0;
