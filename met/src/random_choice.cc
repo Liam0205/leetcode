@@ -6,36 +6,41 @@
 #include <limits>
 #include <functional>
 #include <map>
+#include <vector>
 
 template <typename T>
 class discrete_random_variable {
  private:
-  const std::vector<T> values_;
-  std::vector<double>  cumulative_;
-  mutable std::random_device   rd;
-  mutable std::mt19937         gen{rd()};
-  mutable std::uniform_real_distribution<double> dis{0.0, 1.0};
+  const std::vector<T>         values_;
+  const std::vector<double>    cumulative_;
+  mutable std::random_device   rd_;
+  mutable std::mt19937         gen_{rd_()};
+  mutable std::uniform_real_distribution<double> dis_{0.0, 1.0};
 
  public:
-  discrete_random_variable(const std::vector<T> val, const std::vector<double> prob) :
-      values_(val) {
+  discrete_random_variable(const std::vector<T>& val, const std::vector<double>& prob) :
+      values_(val), cumulative_(generate_cumulative(prob)) {
     assert(val.size() == prob.size());
-    cumulative_.clear();
-    cumulative_.reserve(prob.size() + 1);
-    cumulative_.emplace_back(0);
-    std::transform(prob.begin(), prob.end(), std::back_inserter(cumulative_),
-        [&](const double p) { return p + cumulative_.back(); } );
     assert(std::fabs(1.0 - cumulative_.back()) < std::numeric_limits<double>::epsilon());
   }
 
   T operator()() const {
-    const double rand = dis(gen);
+    const double rand = dis_(gen_);
     const size_t idx  = bsearch_last_not_greater_than(cumulative_.begin(), cumulative_.end(), rand);
     assert(idx < values_.size());
     return values_[idx];
   }
 
  private:
+  std::vector<double> generate_cumulative(const std::vector<double>& prob) {
+    std::vector<double> cumulative;
+    cumulative.reserve(prob.size() + 1);
+    cumulative.emplace_back(0);
+    std::transform(prob.begin(), prob.end(), std::back_inserter(cumulative),
+        [&](const double p) { return p + cumulative.back(); } );
+    return cumulative;
+  }
+
   template <typename iter_t,
             typename value_t = typename std::iterator_traits<iter_t>::value_type,
             typename binpred_t = std::less<value_t>>
@@ -61,13 +66,13 @@ class discrete_random_variable {
 
 int main() {
   std::vector<int> values{1, 2, 3, 4};
-  std::vector<double> probs{0.1, 0.2, 0.3, 0.4};
+  std::vector<double> probs{0.05, 0.25, 0.35, 0.35};
 
   discrete_random_variable<int> drv{values, probs};
 
   std::map<int, size_t> counter;
 
-  for (size_t i = 0; i != 200000; ++i) {
+  for (size_t i = 0; i != 400000; ++i) {
     int x = drv();
     assert(std::find(values.begin(), values.end(), x) != values.end());
     ++counter[x];

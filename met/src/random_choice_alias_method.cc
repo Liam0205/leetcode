@@ -13,26 +13,39 @@ template <typename T>
 class discrete_random_variable {
  private:
   const std::vector<T> values_;
-  std::vector<double>  probs_;
-  std::vector<size_t>  alias_;
-  mutable std::random_device   rd;
-  mutable std::mt19937         gen{rd()};
-  mutable std::uniform_real_distribution<double> real_dis{0.0, 1.0};
-  mutable std::uniform_int_distribution<size_t>  int_dis;
+  const std::vector<std::pair<double, size_t>> alias_;
+  mutable std::random_device   rd_;
+  mutable std::mt19937         gen_{rd_()};
+  mutable std::uniform_real_distribution<double> real_dis_{0.0, 1.0};
+  mutable std::uniform_int_distribution<size_t>  int_dis_;
 
  public:
-  discrete_random_variable(const std::vector<T>& vals, std::vector<double> probs) :
-      values_(vals), int_dis(0, probs.size() - 1) {
+  discrete_random_variable(const std::vector<T>& vals, const std::vector<double>& probs) :
+      values_(vals), alias_(generate_alias_table(probs)), int_dis_(0, probs.size() - 1) {
     assert(vals.size() == probs.size());
     const double sum = std::accumulate(probs.begin(), probs.end(), 0.0);
     assert(std::fabs(1.0 - sum) < std::numeric_limits<double>::epsilon());
+  }
+
+  T operator()() const {
+    const size_t idx  = int_dis_(gen_);
+    if (real_dis_(gen_) >= alias_[idx].first and
+          alias_[idx].second != std::numeric_limits<size_t>::max()) {
+      return values_[alias_[idx].second];
+    } else {
+      return values_[idx];
+    }
+  }
+
+ private:
+  std::vector<std::pair<double, size_t>> generate_alias_table(const std::vector<double>& probs) {
     const size_t sz = probs.size();
-    std::vector<size_t> alias(sz, std::numeric_limits<size_t>::max());
+    std::vector<std::pair<double, size_t>> alias(sz, {0.0, std::numeric_limits<size_t>::max()});
     std::queue<size_t>  small, large;
 
     for (size_t i = 0; i != sz; ++i) {
-      probs[i] *= sz;
-      if (probs[i] < 1.0) {
+      alias[i].first = sz * probs[i];
+      if (alias[i].first < 1.0) {
         small.push(i);
       } else {
         large.push(i);
@@ -42,27 +55,17 @@ class discrete_random_variable {
     while (not(small.empty()) and not(large.empty())) {
       auto s = small.front(), l = large.front();
       small.pop(), large.pop();
-      alias[s] = l;
-      probs[l] -= (1.0 - probs[s]);
+      alias[s].second = l;
+      alias[l].first -= (1.0 - alias[s].first);
 
-      if (probs[l] < 1.0) {
+      if (alias[l].first < 1.0) {
         small.push(l);
       } else {
         large.push(l);
       }
     }
 
-    probs_ = std::move(probs);
-    alias_ = std::move(alias);
-  }
-
-  T operator()() const {
-    const size_t idx  = int_dis(gen);
-    if (real_dis(gen) >= probs_[idx] and alias_[idx] != std::numeric_limits<size_t>::max()) {
-      return values_[alias_[idx]];
-    } else {
-      return values_[idx];
-    }
+    return alias;
   }
 };
 
